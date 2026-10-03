@@ -1,0 +1,9 @@
+data/
+__pycache__/
+*.sqlite*
+*.pem
+*.key
+*.log
+config.json
+*登录*
+*密码*

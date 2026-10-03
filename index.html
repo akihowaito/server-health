@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow"><title>服务器观测台</title>
+  <link rel="stylesheet" href="./style.css"><script src="./runtime.js" defer></script><script src="./app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+<header class="topbar">
+  <a class="brand" href="#overview"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="4" y="4" width="20" height="8" rx="2"/><rect x="4" y="16" width="20" height="8" rx="2"/><path d="M8 8h1m4 0h7M8 20h1m4 0h7"/></svg><span>服务器观测台<small>124.156.165.21</small></span></a>
+  <nav aria-label="主要导航"><a href="#overview" class="active">总览</a><a href="#china">国内访问</a><a href="#sites">网站与证书</a><a href="#system">服务器</a></nav>
+  <div class="top-actions"><span class="badge neutral" id="connection">正在连接</span><button id="export" class="quiet">导出报告</button><button id="logout" class="quiet" hidden>退出登录</button></div>
+</header>
+<section id="login-panel" class="login-panel" hidden aria-labelledby="login-title">
+  <div class="login-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="7" y="14" width="18" height="14" rx="3"/><path d="M11 14V9a5 5 0 0 1 10 0v5m-5 6v3"/></svg></div>
+  <h1 id="login-title">你的服务器，私密查看。</h1>
+  <p>输入访问密码，查看实时资源、网站状态和国内访问质量。</p>
+  <form id="login-form"><label for="access-password">访问密码</label><input id="access-password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="请输入访问密码"><p id="login-error" class="login-error" role="alert" hidden></p><button id="login-submit" class="primary" type="submit">进入监控台</button></form>
+  <p class="login-note">采集持续运行在 Ubuntu 上。关闭网页或电脑，也不会中断监控。登录有效期 8 小时。</p>
+</section>
+<main id="main" hidden>
+  <section id="overview" class="intro">
+    <div><h1>服务器，一眼看清。</h1><p>资源有没有吃紧，网站能不能打开，国内访问到底快不快。</p></div>
+    <div class="intro-state"><span id="overall" class="badge neutral">正在读取真实数据</span><span id="last-updated" class="muted">首次采集通常需要 30 秒</span></div>
+  </section>
+  <div id="connection-error" class="notice error" hidden></div>
+  <div id="alerts" class="notice" hidden></div>
+  <section class="resource-strip" aria-label="服务器关键资源" id="resources"><div class="empty">正在通过 SSH 读取服务器资源…</div></section>
+  <section id="china" class="panel china-panel">
+    <div class="section-head"><div><h2>国内访问质量<span class="tag">真实节点</span></h2><p id="china-caption">中国大陆 · 电信 / 联通 / 移动 · 每 30 分钟检测</p></div><button class="primary" id="check-china">立即测国内</button></div>
+    <div class="target-line"><label for="china-target">检测网站</label><select id="china-target"><option>正在读取网站列表…</option></select><span id="china-stamp" class="muted">尚未完成检测</span></div>
+    <div id="china-error" class="notice error" hidden></div>
+    <div id="china-summary" class="carrier-grid"><div class="empty">正在请求国内探测节点。只展示实际返回的结果。</div></div>
+    <div class="table-heading"><h3>网站请求分解</h3><span class="muted">单位 ms · 点开查看节点 · 小屏可横向滑动表格</span></div>
+    <div class="table-scroll"><table class="probe-table"><thead><tr><th>国内探测点</th><th>结果</th><th>DNS</th><th>TCP</th><th>TLS</th><th>首包等待</th><th>下载</th><th>请求总耗时</th></tr></thead><tbody id="http-rows"><tr><td colspan="8" class="empty">等待首次检测</td></tr></tbody></table></div>
+    <div class="explain"><strong>如何理解这些数字</strong><p>HTTP 检测记录单次请求，不执行页面脚本，也不下载页面引用的图片。遇到 301/302 时只证明跳转入口可达。首包等待是连接建立后到首字节的等待时间；总耗时包含 DNS、TCP、TLS 和下载。节点样本不能代表全国所有用户。</p></div>
+    <details class="detail-block" open><summary>服务器 IP 线路与丢包 <span class="muted">124.156.165.21 · ICMP · 每节点 5 个包</span></summary><div class="table-scroll"><table><thead><tr><th>探测点</th><th>平均往返</th><th>最小 / 最大</th><th>丢包</th><th>接收 / 发送</th><th>线路判断</th></tr></thead><tbody id="ping-rows"><tr><td colspan="6" class="empty">等待首次检测</td></tr></tbody></table></div><p class="footnote">HTTP 与 Ping 独立选取节点，同一运营商也可能来自不同城市。ICMP 被限制时，不能仅凭 Ping 失败认定网站离线。</p></details>
+    <details class="detail-block"><summary>国内检测历史与数据来源</summary><div id="china-history" class="history-list"></div><p class="footnote">来源：<a href="https://globalping.io" target="_blank" rel="noreferrer">Globalping 社区探测网络</a>。限定中国大陆及 AS4134、AS4837、AS9808；每网请求 2 个节点，实际返回数量可能不同。城市与网络由探测服务提供，非全省覆盖或运营商 SLA。</p></details>
+  </section>
+  <section class="panel" id="trends">
+    <div class="section-head"><div><h2>资源变化</h2><p id="history-caption">每 30 秒采样 · 历史保存 7 天</p></div><div class="segmented" role="group" aria-label="历史时间范围"><button data-hours="1">1 小时</button><button data-hours="6">6 小时</button><button data-hours="24" class="selected" aria-pressed="true">24 小时</button><button data-hours="168">7 天</button></div></div>
+    <div class="chart-grid"><div><div class="chart-title"><h3>CPU 与内存</h3><div class="legend"><span class="cpu">CPU</span><span class="memory">内存</span></div></div><div id="usage-chart" class="chart"></div></div><div><div class="chart-title"><h3>网络吞吐</h3><div class="legend"><span class="cpu">接收</span><span class="memory">发送</span></div></div><div id="network-chart" class="chart"></div></div></div>
+    <p class="footnote">曲线只绘制已采集的时间段，长时间断采会留空；网络吞吐为接口计数差值，不代表服务器购买的带宽上限。</p>
+  </section>
+  <section id="sites" class="panel">
+    <div class="section-head"><div><h2>网站与 HTTPS 证书<span id="site-count" class="tag">12 个入口</span></h2><p id="site-source">从当前电脑直连访问 · 每 5 分钟检测 · 地区与运营商未核验</p></div><button id="check-sites">检查网站</button></div>
+    <div class="filter-line"><label class="search-label" for="site-search">筛选网站<input id="site-search" type="search" placeholder="输入域名或网站名称"></label><label class="check-label"><input id="only-issues" type="checkbox">只看异常 / 证书临期</label><span id="sites-stamp" class="muted"></span></div>
+    <div id="sites-error" class="notice error" hidden></div>
+    <div class="table-scroll"><table class="site-table"><thead><tr><th>网站 / 当前响应 IP</th><th>检测状态</th><th>首字节 / 总耗时</th><th>24 小时样本</th><th>7 天样本</th><th>证书剩余</th></tr></thead><tbody id="site-rows"><tr><td colspan="6" class="empty">正在检查网站…</td></tr></tbody></table></div>
+    <p class="footnote">样本成功率 = 已执行检查中的成功比例，并非连续在线时长；开始采集前的时间不计入。返回 2xx/3xx 视为 HTTP 可达，不验证登录或游戏功能。响应 IP 与 124 服务器不同的入口会单独标记。</p>
+  </section>
+  <section id="system" class="system-grid">
+    <div class="panel"><div class="section-head"><div><h2>主机详情</h2><p>Ubuntu · SSH 只读采集</p></div><button id="check-metrics">刷新资源</button></div><dl id="host-details" class="facts"><dt>采集状态</dt><dd>等待连接</dd></dl></div>
+    <div class="panel"><div class="section-head"><div><h2>后台服务</h2><p>网站服务、Caddy、SSH 与异常服务</p></div><span class="tag" id="service-count">—</span></div><div id="services" class="service-list"></div></div>
+    <div class="panel"><div class="section-head"><div><h2>占用最多的进程</h2><p>按常驻内存排序 · 前 10 项</p></div></div><div class="table-scroll"><table><thead><tr><th>进程</th><th>PID</th><th>内存 RSS</th><th>CPU 均值</th></tr></thead><tbody id="processes"></tbody></table></div><p class="footnote">进程 CPU 为 ps 返回的进程生命周期平均值，与顶部的 30 秒 CPU 使用率口径不同。</p></div>
+    <div class="panel"><div class="section-head"><div><h2>采集与判断口径</h2><p>每个结论都能找到来源</p></div></div><div class="method-list"><div><strong>服务器资源 · 每 30 秒</strong><p>直接读取 Linux /proc、磁盘和 systemd 状态。CPU 与吞吐需要两次连续采样。</p></div><div><strong>网站可用性 · 每 5 分钟</strong><p>本机 curl HTTPS 请求，验证证书并最多跟随 4 次 HTTPS 跳转。不会自动修改 DNS 或网站设置。</p></div><div><strong>国内网络 · 每 30 分钟</strong><p>三网 HTTP 和服务器 IP Ping，共请求 12 个探测任务。节点与免费额度不足时保留最后一次结果并显示错误。</p></div><div><strong>运行方式 · 当前电脑</strong><p>网页仅在本机开放。电脑和采集程序保持运行时才持续记录，关闭网页不影响采集；关闭电脑会中断记录。历史保存在本机。</p></div></div></div>
+  </section>
+  <footer><span id="deployment-label">服务器观测台 · 私有本机监控</span><span>所有时间按当前浏览器时区显示 · 无演示数据</span></footer>
+</main><div id="toast" role="status" aria-live="polite" hidden></div>
+</body></html>
