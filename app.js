@@ -23,7 +23,7 @@ const bytes = (v, digits=1) => {
 const median = values => { const a=values.filter(v=>v!=null && Number.isFinite(v)).sort((a,b)=>a-b); return a.length ? (a[Math.floor((a.length-1)/2)]+a[Math.ceil((a.length-1)/2)])/2 : null; };
 const badge = (text,kind='neutral') => `<span class="badge ${kind}">${escapeHTML(text)}</span>`;
 const cities = {Guangzhou:'广州',Nanjing:'南京',Guilin:'桂林',Beijing:'北京',Shanghai:'上海',Changsha:'长沙',Nanning:'南宁',Kunming:'昆明',Taishan:'台山',Wuhan:'武汉',Wuhu:'芜湖',Chengdu:'成都',Wuxi:'无锡',Hangzhou:'杭州',Ningbo:'宁波',Shenzhen:'深圳',Tianjin:'天津',Yangzhou:'扬州','Xi\'an':'西安',Zhenjiang:'镇江'};
-const names = {'monopoly.gege':'GEGE 大富翁','lizhiclub-guessingnumber':'荔芝数字猜猜猜','hqclub-ootd':'HQ 装备 OOTD','kcm-club-monopoly':'KCM 大富翁','ydkclub-ootd':'有点困 OOTD','cywclub-ootd':'吃一碗 OOTD','hailiclub-monopoly':'HAILI 大富翁','rainjayclub.wishingwheel':'RainJay 许愿转盘','tomiaclub-xizitravel':'TOMIA 西子行记','mikaclub-kitchen':'咪咔御膳房','manmiao-octevent':'蔓妙十月活动','wugangclub':'雾港俱乐部'};
+const names = {'monopoly.gege':'GEGE 大富翁','hqclub-ootd':'HQ 装备 OOTD','kcm-club-monopoly':'KCM 大富翁','ydkclub-ootd':'有点困 OOTD','cywclub-ootd':'吃一碗 OOTD','hailiclub-monopoly':'HAILI 大富翁','mikaclub-kitchen':'咪咔御膳房','manmiao-octevent':'蔓妙十月活动','wugangclub':'雾港俱乐部'};
 const siteName = host => names[host.replace('.akihowaito.cn','')] || host;
 let state = null, hours = 24, toastTimer, loading = false, lastChina = '', lastSystem = '';
 
